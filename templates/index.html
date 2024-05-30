@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semantic Search</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Semantic Search</h1>
+    </header>
+    <main>
+        <form id="searchForm" onsubmit="return searchDocuments()">
+            <input type="text" id="searchInput" name="q" placeholder="Enter your search query">
+            <button type="submit">Search</button>
+        </form>
+        <form id="uploadForm" method="post" enctype="multipart/form-data" action="/upload">
+            <input type="file" id="fileInput" name="file">
+            <button type="submit">Upload</button>
+        </form>
+        <div id="searchResults"></div>
+    </main>
+
+    <script>
+        async function searchDocuments() {
+            event.preventDefault();
+            const query = document.getElementById("searchInput").value;
+            const response = await fetch("/docs?q=" + encodeURIComponent(query));
+            const data = await response.json();
+            const resultsDiv = document.getElementById("searchResults");
+            resultsDiv.innerHTML = "";
+            resultsDiv.appendChild(response);
+            data.forEach(result => {
+                const resultElement = document.createElement("p");
+                resultElement.textContent = result;
+                resultsDiv.appendChild(resultElement);
+            });
+        }
+    </script>
+</body>
+</html>
